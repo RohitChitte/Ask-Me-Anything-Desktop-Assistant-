@@ -22,28 +22,37 @@ class Desktop_Assistant:
            logger.loginfo("Initialized Object of Desktop Assistant")
        except Exception as e:
            print(e)
+           logger.logerror("error occured while Initializing Object of Desktop Assistant")
    def speak(self, audio):
        try:
            self.engine.say(audio)
            self.engine.runAndWait()
+           logger.loginfo("executed speak function")
        except Exception as e :
            print(e)
+           logger.logerror("Error occured while executing speak funtion")
 
    def wishMe(self):
        try:
            hour = int(datetime.datetime.now().hour)
            if hour >= 0 and hour < 12:
                self.speak("Good Morning!")
+               logger.loginfo("wished Good Morning")
 
            elif hour >= 12 and hour < 17:
                self.speak("Good Afternoon!")
+               logger.loginfo("wished Good Afternoon")
 
            else:
                self.speak("Good Evening!")
+               logger.loginfo("wished Good Evening")
 
-           self.speak("I am Aleena . Please tell me how may I help you Sir")
+           self.speak("I am female Jarvis . Please tell me how may I help you Sir")
+           logger.loginfo("wishMe function executed successfully")
        except Exception as e:
            print(e)
+           logger.logerror("Error occured while running wishme function")
+
    def takeCommand(self):
        # It takes microphone input from the user and returns string output
 
@@ -57,72 +66,121 @@ class Desktop_Assistant:
            print("Recognizing...")
            query = r.recognize_google(audio, language='en-in')
            print(f"User said: {query}\n")
-
+           logger.loginfo("takeCommand Function executed succesfully")
        except Exception as e:
            # print(e)
            self.speak("Sir Say that again please...")
            print("Say that again please...")
            return "None"
+           logger.logwarning("system was not able to recognise user audio input")
+       logger.loginfo(f"user's query {query}")
        return query
 
    def sendEmail(self, to, content):
-       server = smtplib.SMTP('smtp.gmail.com', 587)
-       server.ehlo()
-       server.starttls()
-       gmail = 'chitterohit2112@gmail.com'
-       password = 'Kalaam3@lpha'
-       server.login(gmail, password)
-       server.sendmail(gmail, to, content)
-       server.close()
+       try:
+           server = smtplib.SMTP('smtp.gmail.com', 587)
+           server.ehlo()
+           server.starttls()
+           gmail = 'chitterohit2112@gmail.com'
+           password = 'Kalaam3@lpha'
+           server.login(gmail, password)
+           server.sendmail(gmail, to, content)
+           server.close()
+       except Exception as e:
+           print(e)
+           logger.logerror("Error Occured while executing sendEmail function")
 
 try:
+
     Assistant = Desktop_Assistant()
     Assistant.wishMe()
+except Exception as e:
+    print(e)
 
+if __name__ == "__main__":
     while True:
         # if 1:
-        query = Assistant.takeCommand().lower()
-
+        try:
+            query = Assistant.takeCommand().lower()
+        except Exception as e:
+            print(e)
         # Logic for executing tasks based on query
+
+
         if 'wikipedia' in query:
-            Assistant.speak('Searching Wikipedia...')
-            query = query.replace("wikipedia", "")
-            results = wikipedia.summary(query, sentences=2)
-            Assistant.speak("According to Wikipedia")
-            print(results)
-            Assistant.speak(results)
+            try:
+                Assistant.speak('Searching Wikipedia...')
+                query = query.replace("wikipedia", "")
+                results = wikipedia.summary(query, sentences=2)
+                Assistant.speak("According to Wikipedia")
+                print(results)
+                Assistant.speak(results)
+            except Exception as e:
+                print(e)
+
 
         elif 'open youtube' in query:
-            webbrowser.open("youtube.com")
+            try:
+                Assistant.speak("Opening youtube")
+                webbrowser.open("youtube.com")
+            except Exception as e:
+                print(e)
 
         elif 'open google' in query:
-            webbrowser.open("google.com")
-
+            try:
+                Assistant.speak("Opening Google")
+                webbrowser.open("google.com")
+            except Exception as e:
+                print(e)
         #elif 'open stackoverflow' or 'open stack overflow' in query:
-        elif 'open stackoverflow' in query:
-            webbrowser.open("stackoverflow.com")
 
+        elif 'stack overflow' in query:
+            try:
+                Assistant.speak("Opening Stackoverflow")
+                webbrowser.open("stackoverflow.com")
+            except Exception as e:
+                print(e)
 
         elif 'play music' in query:
-            #music_dir = 'D:\\Non Critical\\songs\\Favorite Songs2'
-            music_dir = 'R:\Redmi note 4 backup\music'
-            songs = os.listdir(music_dir)
-            print(songs)
-            os.startfile(os.path.join(music_dir, songs[0]))
+            try:
+                Assistant.speak("Playing Music")
+                #music_dir = 'D:\\Non Critical\\songs\\Favorite Songs2'
+                music_dir = 'R:\Redmi note 4 backup\music'
+                songs = os.listdir(music_dir)
+                print(songs)
+                os.startfile(os.path.join(music_dir, songs[0]))
+            except Exception as e:
+                print(e)
 
         elif 'the time' in query:
-            strTime = datetime.datetime.now().strftime("%H:%M:%S")
-            Assistant.speak(f"Sir, the time is {strTime}")
+            try:
+                strTime = datetime.datetime.now().strftime("%H:%M:%S")
+                Assistant.speak(f"Sir, the time is {strTime}")
+            except Exception as e:
+                print(e)
 
         elif 'open code' in query:
-            codePath = "C:\\Users\\Haris\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
-            os.startfile(codePath)
+            try:
+                Assistant.speak("Opening Visual Studio Code")
+                codePath = "C:\\Users\\Haris\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
+                os.startfile(codePath)
+                #Assistant.speak("Next Command Please")
+            except Exception as e:
+                print(e)
 
         elif 'your name' in query:
-            Assistant.speak("My name is aleena ,I'am a computer program")
+            try:
+                Assistant.speak("My name is Female Jarvis ,I'am a computer program")
+                #Assistant.speak("Next Command Please")
+            except Exception as e:
+                print(e)
 
         elif 'created you' in query:
-            Assistant.speak("Rohit Chitte created me")
+            try:
+                Assistant.speak("Rohit Chitte created me")
+                #Assistant.speak("Next Command Please")
+            except Exception as e:
+                print(e)
 
         elif 'send email' in query:
             try:
@@ -131,17 +189,22 @@ try:
                 to = "kolhe_prajwal.ai@ghrce.raisoni.net"
                 Assistant.sendEmail(to, content)
                 Assistant.speak("Email has been sent!")
+                #Assistant.speak("Next Command Please")
             except Exception as e:
                 print(e)
-                Assistant.speak("Sorry my friend harry bhai. I am not able to send this email")
+                Assistant.speak("Sorry my friend Rohit bhai. I am unable to send this email")
+
+        elif 'terminate' in query:
+            break
 
         elif 'weather' in query:
+
             while True:
                 try:
                     Assistant.speak("Please Say city name")
                     city = Assistant.takeCommand().lower()
                     print(city)
-                    Assistant.speak("Searching for Weather Report")
+                  #  Assistant.speak("Searching for Weather Report")
                 except Exception as e:
                     continue
                 else:
@@ -154,11 +217,11 @@ try:
                 print(report)
                 Assistant.speak(f"Weather of {city} is {report}")
                 time.sleep(1)
-                Assistant.speak("Next Command Please")
+                #Assistant.speak("Next Command Please")
+
             except Exception as e:
                 print(e)
 
-        elif 'stop listening' in query:
-            break
-except Exception as e:
-    print(e)
+        Assistant.speak("Next Command Please")
+
+
