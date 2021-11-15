@@ -1,3 +1,4 @@
+import time
 import pyttsx3  #pip install pyttsx3
 import speech_recognition as sr #pip install speechRecognition
 import datetime
@@ -5,6 +6,10 @@ import wikipedia #pip install wikipedia
 import webbrowser
 import os
 import smtplib
+from selenium import  webdriver
+from logger import customelog
+
+logger = customelog()
 
 
 class Desktop_Assistant:
@@ -14,6 +19,7 @@ class Desktop_Assistant:
            self.voices = self.engine.getProperty('voices')
            # print(voices[1].id)
            self.engine.setProperty('voice', self.voices[1].id)
+           logger.loginfo("Initialized Object of Desktop Assistant")
        except Exception as e:
            print(e)
    def speak(self, audio):
@@ -128,6 +134,30 @@ try:
             except Exception as e:
                 print(e)
                 Assistant.speak("Sorry my friend harry bhai. I am not able to send this email")
+
+        elif 'weather' in query:
+            while True:
+                try:
+                    Assistant.speak("Please Say city name")
+                    city = Assistant.takeCommand().lower()
+                    print(city)
+                    Assistant.speak("Searching for Weather Report")
+                except Exception as e:
+                    continue
+                else:
+                    break
+            try:
+                driver = webdriver.Chrome()
+                driver.get("https://www.weather-forecast.com/locations/" + city + "/forecasts/latest")
+                report = (driver.find_elements_by_class_name("b-forecast__table-description-content")[0].text)
+                Assistant.speak("According to Report")
+                print(report)
+                Assistant.speak(f"Weather of {city} is {report}")
+                time.sleep(1)
+                Assistant.speak("Next Command Please")
+            except Exception as e:
+                print(e)
+
         elif 'stop listening' in query:
             break
 except Exception as e:
